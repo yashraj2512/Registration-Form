@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Google Sheet Submit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+      rel="stylesheet" 
+    />
+    <link href="signup.css" rel="stylesheet" id="bootstrap-css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>  
+    <form method="post" id="frmSubmit">
+      <label>
+        <p class="label-txt">ENTER YOUR NAME</p>
+        <input type="text" class="input" name="name" required />
+        <div class="line-box">
+          <div class="line"></div>
+        </div>
+      </label>
+      <label>
+        <p class="label-txt">ENTER YOUR PHONE NUMBER</p>
+        <input type="text" id="phone" class="input" name="phone" required />
+        <div class="line-box">
+          <div class="line"></div>
+        </div>
+      </label>
+      <label>
+        <p class="label-txt">ENTER YOUR EMAIL</p>
+        <input type="text" id="email" class="input" name="email" required />
+        <div class="line-box">
+          <div class="line"></div>
+        </div>
+      </label>
+      <label>
+        <p class="label-txt">ENTER YOUR PASSWORD</p>
+        <input type="password" id = "password" class="input" name="password" required />
+        <div class="line-box">
+          <div class="line"></div>
+        </div> 
+      </label>
+      <label>
+        <p class="label-txt">ENTER YOUR AGE</p>
+        <input type="text" class="input" name="age" required />
+        <div class="line-box">
+          <div class="line"></div>
+        </div>
+      </label>
+      <label>
+        <p class="label-txt">ENTER YOUR GENDER</p>
+
+        <select type="text" class="input" name="gender" required>
+          <option value="">Select</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+        <div class="line-box">
+          <div class="line"></div>
+        </div>
+      </label>
+      <button type="submit" id="btnSubmit">Submit</button>
+      <div id="msg"></div>
+    </form>
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+     <script>
+      jQuery("#frmSubmit").on("submit", function (e) {
+        e.preventDefault();
+
+        // Get the values of email and phone fields
+        let email = jQuery("#email").val();
+        let phone = jQuery("#phone").val();
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let phonePattern = /^[0-9]{10}$/;
+
+        // Validate email
+        if (!emailPattern.test(email)) {
+          jQuery("#msg").html("Please enter a valid email address.");
+          return;
+        }
+
+        // Validate phone
+        if (!phonePattern.test(phone)) {
+          jQuery("#msg").html("Please enter a valid 10-digit phone number.");
+          return;
+        }
+            // Get the password value
+        let password = jQuery("#password").val();
+
+        // Hash the password using SHA-256
+        let hashedPassword = CryptoJS.SHA256(password).toString();
+
+        // Replace the password field value with the hashed password
+        jQuery("#password").val(hashedPassword);
+
+        // Proceed with form submission
+        jQuery("#msg").html("Please wait...");
+        jQuery("#btnSubmit").attr("disabled", true);
+
+        jQuery.ajax({
+          url: "https://script.google.com/macros/s/AKfycbx7jyLyZPQ7U12KFsmSxcr1e2IspjXIviFzjNTcbkn2zEsk0mO-cG6JJM42YeVpxp_s/exec",
+          type: "post",
+          data: jQuery("#frmSubmit").serialize(),
+          success: function (result) {
+            jQuery("#frmSubmit")[0].reset();
+            jQuery("#msg").html("Thank You");
+            jQuery("#btnSubmit").attr("disabled", false);
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
